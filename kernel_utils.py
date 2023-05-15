@@ -50,7 +50,7 @@ class VideoReader:
         frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
         if frame_count <= 0: return None
 
-        frame_idxs = np.linspace(0, frame_count - 1, num_frames, endpoint=True, dtype=np.int)
+        frame_idxs = np.linspace(0, frame_count - 1, num_frames, endpoint=True, dtype=np.int32)
         if jitter > 0:
             np.random.seed(seed)
             jitter_offsets = np.random.randint(-jitter, jitter, len(frame_idxs))
@@ -303,7 +303,7 @@ def isotropically_resize_image(img, size, interpolation_down=cv2.INTER_AREA, int
 
 
 def predict_on_video(face_extractor, video_path, batch_size, input_size, models, strategy=np.mean,
-                     apply_compression=False):
+                     apply_compression=False, device='cpu'):
     batch_size *= 4
     try:
         faces = face_extractor.process_video(video_path)
@@ -322,7 +322,10 @@ def predict_on_video(face_extractor, video_path, batch_size, input_size, models,
                     else:
                         pass
             if n > 0:
-                x = torch.tensor(x, device="cuda").float()
+                if device == 'cpu':
+                    x = torch.tensor(x, device='cpu').float()
+                else:
+                    x = torch.tensor(x, device="cuda").float()
                 # Preprocess the images.
                 x = x.permute((0, 3, 1, 2))
                 for i in range(len(x)):
@@ -331,7 +334,10 @@ def predict_on_video(face_extractor, video_path, batch_size, input_size, models,
                 with torch.no_grad():
                     preds = []
                     for model in models:
-                        y_pred = model(x[:n].half())
+                        if device == 'cpu':
+                            y_pred = model(x[:n])
+                        else:
+                            y_pred = model(x[:n].half())
                         y_pred = torch.sigmoid(y_pred.squeeze())
                         bpred = y_pred[:n].cpu().numpy()
                         preds.append(strategy(bpred))

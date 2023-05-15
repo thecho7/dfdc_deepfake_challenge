@@ -6,6 +6,10 @@ from collections import defaultdict
 from sklearn.metrics import log_loss
 from torch import topk
 
+import sys
+print('@@@@@@@@@@@@@@@@@@')
+sys.path.append('..')
+
 from training import losses
 from training.datasets.classifier_dataset import DeepFakeClassifierDataset
 from training.losses import WeightedLosses
@@ -40,7 +44,6 @@ from tqdm import tqdm
 import torch.distributed as dist
 
 torch.backends.cudnn.benchmark = True
-
 
 def create_train_transforms(size=300):
     return Compose([

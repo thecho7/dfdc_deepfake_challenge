@@ -4,7 +4,7 @@ import os
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
 os.environ["OMP_NUM_THREADS"] = "1"
-from skimage.measure import compare_ssim
+from skimage.metrics import structural_similarity as ssim
 
 from functools import partial
 from multiprocessing.pool import Pool
@@ -42,13 +42,15 @@ def save_diffs(pair, root_dir):
                 img1 = cv2.imread(ori_path, cv2.IMREAD_COLOR)
                 img2 = cv2.imread(fake_path, cv2.IMREAD_COLOR)
                 try:
-                    d, a = compare_ssim(img1, img2, multichannel=True, full=True)
+                    d, a = ssim(img1, img2, channel_axis=2, multichannel=True, full=True)
                     a = 1 - a
                     diff = (a * 255).astype(np.uint8)
                     diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
                     cv2.imwrite(diff_path, diff)
                 except:
                     pass
+            else:
+                print(os.path.exists(ori_path), ori_path, os.path.exists(fake_path), fake_path)
 
 def parse_args():
     parser = argparse.ArgumentParser(

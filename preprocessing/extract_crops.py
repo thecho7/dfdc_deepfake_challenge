@@ -68,6 +68,7 @@ def get_video_paths(root_dir):
                 continue
             paths.append((os.path.join(dir, k), bboxes_path))
 
+    print(paths, len(paths))
     return paths
 
 

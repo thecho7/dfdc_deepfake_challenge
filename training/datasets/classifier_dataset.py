@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 import skimage.draw
 from albumentations import ImageCompression, OneOf, GaussianBlur, Blur
-from albumentations.augmentations.functional import image_compression, rot90
+from albumentations.augmentations.functional import image_compression
+from albumentations.augmentations.geometric.functional import rot90
 from albumentations.pytorch.functional import img_to_tensor
 from scipy.ndimage import binary_erosion, binary_dilation
 from skimage import measure
@@ -346,6 +347,9 @@ class DeepFakeClassifierDataset(Dataset):
     def __len__(self) -> int:
         return len(self.data)
 
+    def get_distribution(self):
+        return self.n_real, self.n_fake
+
     def _prepare_data(self, epoch, seed):
         df = self.df
         if self.mode == "train":
@@ -365,6 +369,8 @@ class DeepFakeClassifierDataset(Dataset):
             "real {} fakes {} mode {}".format(len(rows[rows["label"] == 0]), len(rows[rows["label"] == 1]), self.mode))
         data = rows.values
 
+        self.n_real = len(rows[rows["label"] == 0])
+        self.n_fake = len(rows[rows["label"] == 1])
         np.random.seed(seed)
         np.random.shuffle(data)
         return data

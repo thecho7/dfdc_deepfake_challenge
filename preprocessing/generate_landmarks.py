@@ -45,6 +45,7 @@ def save_landmarks(ori_id, root_dir):
                     frame_img = Image.fromarray(image_ori)
                     batch_boxes, conf, landmarks = detector.detect(frame_img, landmarks=True)
                     if landmarks is not None:
+                        landmarks = landmarks.astype(np.int16)
                         landmarks = np.around(landmarks[0]).astype(np.int16)
                         np.save(landmark_path, landmarks)
                 except Exception as e:

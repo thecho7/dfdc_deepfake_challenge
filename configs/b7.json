@@ -5,16 +5,16 @@
     "size": 380,
     "fp16": true,
     "optimizer": {
-        "batch_size": 12,
+        "batch_size": 4,
         "type": "SGD",
         "momentum": 0.9,
         "weight_decay": 1e-4,
-        "learning_rate": 0.01,
+        "learning_rate": 1e-4,
         "nesterov": true,
         "schedule": {
             "type": "poly",
             "mode": "step",
-            "epochs": 40,
+            "epochs": 20,
             "params": {"max_iter":  100500}
         }
     },

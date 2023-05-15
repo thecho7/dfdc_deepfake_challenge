@@ -12,11 +12,16 @@ def get_original_video_paths(root_dir, basename=False):
         with open(json_path, "r") as f:
             metadata = json.load(f)
         for k, v in metadata.items():
+            original = k
+            originals_v.add(original)
+            originals.add(os.path.join(dir, original))
+            """
             original = v.get("original", None)
             if v["label"] == "REAL":
                 original = k
                 originals_v.add(original)
                 originals.add(os.path.join(dir, original))
+            """
     originals = list(originals)
     originals_v = list(originals_v)
     print(len(originals))
@@ -26,12 +31,19 @@ def get_original_video_paths(root_dir, basename=False):
 def get_original_with_fakes(root_dir):
     pairs = []
     for json_path in glob(os.path.join(root_dir, "*/metadata.json")):
+        print(json_path)
         with open(json_path, "r") as f:
             metadata = json.load(f)
-        for k, v in metadata.items():
+
+        cnt = 0
+        for idx, (k, v) in enumerate(metadata.items()):
             original = v.get("original", None)
             if v["label"] == "FAKE":
                 pairs.append((original[:-4], k[:-4] ))
+                print(idx, k, v)
+                cnt += 1
+
+        print(cnt)
 
     return pairs
 

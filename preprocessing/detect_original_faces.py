@@ -38,9 +38,6 @@ def process_videos(videos, root_dir, detector_cls: Type[VideoFaceDetector]):
         with open(os.path.join(out_dir, "{}.json".format(id)), "w") as f:
             json.dump(result, f)
 
-
-
-
 def main():
     args = parse_args()
     originals = get_original_video_paths(args.root_dir)

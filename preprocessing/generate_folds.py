@@ -81,6 +81,7 @@ def main():
                         assert fold is not None
                         video_id = k[:-4]
                         video_fold[video_id] = fold
+                        #video_fold[video_id] = 0 if random.randint(0, 4) != 0 else 1
     for fold in range(len(folds)):
         holdoutset = {k for k, v in video_fold.items() if v == fold}
         trainset = {k for k, v in video_fold.items() if v != fold}
@@ -105,7 +106,15 @@ def main():
         file = path.name
         assert video_fold[video] == video_fold[ori_vid], "original video and fake have leak  {} {}".format(ori_vid,
                                                                                                            video)
+        #temp = 0 if random.randint(0, 4) == 0 else 1
+        #label_temp = 0 if random.randint(0, 4) == 0 else 1
+        file_path = os.path.join("dataset", "diffs", video, file[:-4] + "_diff.png")
+        if not os.path.exists(file_path):
+            print(file_path)
+            continue
+        #fold_data.append([video, file, label_temp, ori_vid, int(file.split("_")[0]), temp])
         fold_data.append([video, file, label, ori_vid, int(file.split("_")[0]), video_fold[video]])
+
     random.shuffle(fold_data)
     pd.DataFrame(fold_data, columns=["video", "file", "label", "original", "frame", "fold"]).to_csv(args.out, index=False)
 
