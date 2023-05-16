@@ -31,8 +31,6 @@ from albumentations import Compose, RandomBrightnessContrast, \
 	ShiftScaleRotate, ImageCompression, PadIfNeeded, GaussNoise, GaussianBlur
 
 from apex.parallel import DistributedDataParallel, convert_syncbn_model
-from tensorboardX import SummaryWriter
-
 from apex import amp
 
 import torch
