@@ -301,9 +301,9 @@ def evaluate_val(args, data_val, bce_best, model, snapshot_name, current_epoch, 
 
 		# Validation logger
 		if args.logger == 'wandb':
-			logger.log({"val/loss": bce, "val/accurcay": acc})
+			logger.log({"val/loss": bce, "val/accuracy": acc})
 		elif args.logger == 'vessl':
-			vessl.log({"val/loss": bce, "val/accurcay": acc}, step=current_epoch)
+			vessl.log({"val/loss": bce, "val/accuracy": acc}, step=current_epoch)
 
 		if bce < bce_best:
 			print("Epoch {} improved from {} to {}".format(current_epoch, bce_best, bce))
